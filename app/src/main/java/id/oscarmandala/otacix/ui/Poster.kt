@@ -49,7 +49,6 @@ import id.oscarmandala.otacix.util.Tier
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.matchParentSize
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.draw.drawBehind
