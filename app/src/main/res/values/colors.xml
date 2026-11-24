@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="otacix_bg">#FF040B1E</color>
+    <color name="otacix_blue">#FF064A94</color>
+    <color name="otacix_yellow">#FFFDC12B</color>
+    <color name="otacix_icon_bg">#FFFFFFFF</color>
+</resources>
