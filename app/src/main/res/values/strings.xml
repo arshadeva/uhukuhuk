@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Otacix</string>
+    <!-- Menimpa nama channel notifikasi bawaan Media3 -->
+    <string name="default_notification_channel_name">Pemutar Otacix</string>
+</resources>
