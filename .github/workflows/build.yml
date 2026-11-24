@@ -1,0 +1,52 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+  workflow_dispatch:   # bisa dijalankan manual dari tab Actions
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      # Android SDK sudah terpasang di ubuntu-latest, jadi setup-android tidak dipakai (sering gagal di sdkmanager).
+      - name: Terima lisensi SDK
+        run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+
+      # Memasang Gradle 8.9 langsung, jadi tidak perlu gradle-wrapper.jar
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.9
+
+      - name: Build APK debug
+        run: |
+          set +e
+          gradle assembleDebug --console=plain --stacktrace > build.log 2>&1
+          code=$?
+          if [ $code -ne 0 ]; then
+            { echo '### Penyebab gagal'; echo '```'; grep -E "^e: |What went wrong|error:|Execution failed" -A4 build.log | head -60; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+            msg=$(grep -E "^e: |What went wrong|error:|Execution failed" -A3 build.log | head -20 | sed 's/%/%25/g' | awk '{printf "%s%%0A",$0}')
+            echo "::error title=Penyebab gagal::$msg"
+          fi
+          exit $code
+
+      - name: Simpan log build
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Otacix-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
